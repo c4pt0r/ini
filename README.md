@@ -15,5 +15,4 @@ v4 := conf.String("section_4", "field1", "default")
 v5 := conf.Int(GLOBAL_SECTION, "global_1", 0)
 
 conf.Parse()
-
 ```
