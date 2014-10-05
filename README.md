@@ -4,15 +4,31 @@ ini
 Parse INI file like "flag" in Go
 
 
+```
+go get -u github.com/c4pt0r/ini
+```
+
+
 Example:
 
 ```
-conf := NewConf("test.ini")
-v1 := conf.String("section_2", "field1", "default")
-v2 := conf.String("section_1", "field1", "default")
-v3 := conf.String("section_3", "field1", "default")
-v4 := conf.String("section_4", "field1", "default")
-v5 := conf.Int(GLOBAL_SECTION, "global_1", 0)
+package main
 
-conf.Parse()
+import (
+	"log"
+	"github.com/c4pt0r/ini"
+)
+
+var conf = ini.NewConf("test.ini")
+
+var (
+	v1 = conf.String("section1", "field1", "v1")
+	v2 = conf.Int("section1", "field2", 0)
+)
+
+func main() {
+	conf.Parse()
+
+	log.Println(*v1, *v2)
+}
 ```
