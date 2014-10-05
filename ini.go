@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 )
 
 const (
@@ -315,20 +314,22 @@ func (c *ConfSet) Duration(sectionName, name string, value time.Duration) *time.
 	return p
 }
 
-func (c *ConfSet) parseOne(sectionName string, line string) (bool, error) {
+func (c *ConfSet) parseOne(sectionName string, line string) error {
 	s, sectionExists := c.sections[sectionName]
 	parts := strings.Split(line, "=")
 	name, value := parts[0], parts[1]
+	name = strings.TrimSpace(name)
+	value = strings.TrimSpace(value)
 
 	if sectionExists {
 		if v, valExists := s.Vals[name]; valExists {
 			if err := v.Val.Set(value); err != nil {
-				return false, err
+				return err
 			}
 		}
 	}
 
-	return false, nil
+	return nil
 }
 
 func (c *ConfSet) Parse() error {
@@ -352,7 +353,7 @@ func (c *ConfSet) Parse() error {
 			continue
 		}
 
-		l := strings.TrimLeftFunc(string(line), unicode.IsSpace)
+		l := strings.TrimSpace(string(line))
 
 		// parse section
 		if l[0] == '[' {
@@ -364,11 +365,8 @@ func (c *ConfSet) Parse() error {
 		}
 
 		// parse item
-		seen, err := c.parseOne(currentSection, l)
+		err = c.parseOne(currentSection, l)
 
-		if seen {
-			continue
-		}
 		if err != nil {
 			return err
 		}
