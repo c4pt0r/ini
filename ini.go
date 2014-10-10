@@ -316,7 +316,7 @@ func (c *ConfSet) Duration(sectionName, name string, value time.Duration) *time.
 
 func (c *ConfSet) parseOne(sectionName string, line string) error {
 	s, sectionExists := c.sections[sectionName]
-	parts := strings.Split(line, "=")
+	parts := strings.SplitN(line, "=", 2)
 	name, value := parts[0], parts[1]
 	name = strings.TrimSpace(name)
 	value = strings.TrimSpace(value)
